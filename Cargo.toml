@@ -1,12 +1,20 @@
 [package]
 name = "pass_crack"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 sha2 = "0.10"
+sha1 = "0.10.1"
+sha3 = "0.10.1"
 md-5 = "0.10.1"
+md4 = "0.10.1"
+md2 = "0.10.1"
+sm3 = "0.4.1"
+
+ntlm-hash = "0.1.0"
+
 hex = "0.4.3"
 clap = { version = "3.2.14", features = ["derive"] }

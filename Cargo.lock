@@ -156,6 +156,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "keccak"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f9b7d56ba4a8344d6be9729995e6b06f928af29998cdf79fe390cbf6b1fee838"
+
+[[package]]
 name = "libc"
 version = "0.2.126"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -171,6 +177,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "md2"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8848a2d533edb1bd24efdc5b292c0d69bb5648b08ec6ab244a66bcadede64203"
+dependencies = [
+ "digest",
+]
+
+[[package]]
+name = "md4"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93a5f5240a3fa1cb324a28cb42b1934750a093d7ad200ba052deecf4aff7104b"
+dependencies = [
+ "digest",
+]
+
+[[package]]
+name = "ntlm-hash"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1591bb026ba786f5998efec7ff81d0cb8b1ddf80ea2b3deae68a58889736f8fb"
+
+[[package]]
 name = "once_cell"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -184,12 +214,18 @@ checksum = "648001efe5d5c0102d8cea768e348da85d90af8ba91f0bea908f157951493cd4"
 
 [[package]]
 name = "pass_crack"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "clap",
  "hex",
  "md-5",
+ "md2",
+ "md4",
+ "ntlm-hash",
+ "sha1",
  "sha2",
+ "sha3",
+ "sm3",
 ]
 
 [[package]]
@@ -235,6 +271,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha1"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c77f4e7f65455545c2153c1253d25056825e77ee2533f0e41deb65a93a34852f"
+dependencies = [
+ "cfg-if",
+ "cpufeatures",
+ "digest",
+]
+
+[[package]]
 name = "sha2"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -242,6 +289,25 @@ checksum = "55deaec60f81eefe3cce0dc50bda92d6d8e88f2a27df7c5033b42afeb1ed2676"
 dependencies = [
  "cfg-if",
  "cpufeatures",
+ "digest",
+]
+
+[[package]]
+name = "sha3"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "881bf8156c87b6301fc5ca6b27f11eeb2761224c7081e69b409d5a1951a70c86"
+dependencies = [
+ "digest",
+ "keccak",
+]
+
+[[package]]
+name = "sm3"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f943a7c5e3089f2bd046221d1e9f4fa59396bf0fe966360983649683086215da"
+dependencies = [
  "digest",
 ]
 
