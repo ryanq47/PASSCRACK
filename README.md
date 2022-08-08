@@ -7,6 +7,8 @@ A very basic, single-threaded Rust based password cracker. Supports basic hashes
     -w: Wordlist (ex. /usr/share/wordlists/rockyou) </br>
     -t: Type of hash (ex. sha2) </br>
     -h: Raw hash (Currently hash files are not supported) </br>
+    
+    
     Example:
     ./pass_crack -w rockyou.txt -t sha2 -h ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193
 
