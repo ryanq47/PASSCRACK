@@ -1,7 +1,7 @@
 # PASSCRACK
 A very basic, single-threaded Rust based password cracker. Supports basic hashes, such as MD5, MD4, SHA3-*, and a variety of others
 
-##Syntax
+<b>Syntax</b>
 
 ./pass_crack </br>
     -w: Wordlist (ex. /usr/share/wordlists/rockyou) </br>
