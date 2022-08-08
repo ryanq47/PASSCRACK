@@ -9,6 +9,6 @@ A very basic, single-threaded Rust based password cracker. Supports basic hashes
     -h: Raw hash (Currently hash files are not supported) </br>
     
     
-## <b>Example Command:</b>
+#### <b>Example Command:</b>
     ./pass_crack -w rockyou.txt -t sha2 -h ea09ae9cc6768c50fcee903ed054556e5bfc8347907f12598aa24193
 
