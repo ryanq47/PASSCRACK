@@ -17,6 +17,7 @@ use std::io::{BufRead, BufReader, Write, Error};
 use std::cmp::Ordering;
 use std::io::prelude::*;
 
+
 //very similar to argparse 
 use clap::Parser;
 
@@ -47,17 +48,77 @@ struct Args {
     #[clap(short, long, value_parser)]
     t: String,
 
+    //Additional args, a workaround becuase I don't know how to take a flag without an argument
+    //#[clap(short, long, value_parser, required(false))]
+    //extra: String,
+    //extra: Option<String>
+    
+
+
 }
 
 fn main() {
+    //println!("\x1b[2J");
     let args = Args::parse();
-    second(&args.hash);
+    starting_message();
+    logic(&args.hash);
+    //final_message();
+}
+
+fn starting_message() {
+    let args = Args::parse();
+    //println!("\x1b[1;1H");
+    println!("=======================================");
+    println!("Running Crack on {} hash '{}' using '{}'", args.t, args.hash ,args.wordlist);
+    println!("=======================================");
+}
+
+fn final_message() {
+    println!("If hash was found, it will be listed above");
+}
+
+fn exit() {
+    pub struct ExitCode();
 }
 
 // Instead of each function pulling the hash from the terminal, now it is all passed to it via main() and second()
 // this should make scalability/loading from a text file easier in the future
 
-fn second(input: &str) {
+fn logic(input: &str) {
+    /*
+    //Jank Ass timer becuase idk itjust works
+    let handle = thread::spawn(|| {
+        
+
+        println!("0 Seconds elapsed...");
+        thread::sleep(Duration::from_millis(5000));
+    
+        println!("5 Seconds elapsed...");
+        thread::sleep(Duration::from_millis(5000));
+    
+        println!("10 Seconds elapsed... switching update to every 30 seconds");
+        thread::sleep(Duration::from_millis(20000));
+    
+        println!("30 Seconds elapsed...");
+        thread::sleep(Duration::from_millis(30000));
+    
+        println!("60 Seconds elapsed...");
+        thread::sleep(Duration::from_millis(30000));
+    
+        println!("90 Seconds elapsed...");
+        thread::sleep(Duration::from_millis(30000));
+                
+        println!("120 Seconds elapsed...");
+        thread::sleep(Duration::from_millis(30000));
+    
+        println!("150 Seconds elapsed... How big is this wordlist??");
+        thread::sleep(Duration::from_millis(30000));
+
+        
+    });
+    */
+
+
     let args = Args::parse();
 
     if args.hash == "*.txt" {
@@ -105,24 +166,22 @@ fn second(input: &str) {
     // works great except it ALL needs to stop when it finds a value
     else if args.t == "unknown" {
         let handle = thread::spawn(|| loop {
-            md5("placeholder");
+            md4("placeholder");
             thread::sleep(Duration::from_millis(1));
             break;
         });
         let handle = thread::spawn(|| loop {
             sha256("placeholder");
             thread::sleep(Duration::from_millis(1));
-            break;
+
         });    
         let handle = thread::spawn(|| loop {
             sha1("placeholder");
             thread::sleep(Duration::from_millis(1));
-            break;
         });  
         let handle = thread::spawn(|| loop {
             ntlm("placeholder");
             thread::sleep(Duration::from_millis(1));
-            break;
         });        
 
         
@@ -138,6 +197,8 @@ fn second(input: &str) {
         println!("Bad Hash Type '{}'", args.t);
         //println!("^^ This may go off even on a good hash type, please ignore ^^") //seems to be solved by else if statements
     }
+
+    //handle.join().unwrap(); //having thread join (for commented out timer)
 }
 
 fn file() {
@@ -153,7 +214,7 @@ fn file() {
         println!("HIIIIIIIIIIIII");
         println!("{:?}", input);
         //println!("TEST CAN YOU SEE ME");
-        second(&input);
+        logic(&input);
     }
 
 }
@@ -204,18 +265,18 @@ fn md5(hash_input: &str) {
         
         let encoded_hash = hex::encode(hash);
         ////println!("MD5 Hash is: {:?}", encoded_hash);
+        
+        //if args.extra == "verbose" {
+            //println!("{alt_input}");
+        //}
 
-        //yes there is a better way to do this I know
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("MD5: Trying {alt_input}..."),
-            Ordering::Greater => println!("MD5: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+
+        if uncracked == encoded_hash {
+            println!("
 =======================================
 Decoded MD5 Hash is: {alt_input}
 =======================================");
-                break;
-            }
+            exit();
         }
     }
 }
@@ -232,28 +293,30 @@ fn md4(hash_input: &str) {
 
     for (_index, line) in reader.lines().enumerate() {
         let input = line.unwrap(); // Ignore errors.
-
         let alt_input = input.clone();
-
         let mut hasher = Md4::new();
-
         hasher.update(input);
 
         let hash = hasher.finalize();
         
+
         let encoded_hash = hex::encode(hash);
 
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("MD4: Trying {alt_input}..."),
-            Ordering::Greater => println!("MD4: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+
+        if uncracked != encoded_hash {
+            //println!("\x1b[1J");
+            //println!("\x1b[5;1H");
+            println!("MD4 {}", alt_input);
+        }
+
+
+        else if uncracked == encoded_hash {
+            println!("
 =======================================
 Decoded MD4 Hash is: {alt_input}
 =======================================");
-                    
-                break;
-            }
+            exit();
+            break;
         }
     }
 }
@@ -280,17 +343,12 @@ fn md2(hash_input: &str) {
         
         let encoded_hash = hex::encode(hash);
 
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("MD2: Trying {alt_input}..."),
-            Ordering::Greater => println!("MD2: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
 Decoded MD2 Hash is: {alt_input}
 =======================================");
-                    
-                break;
-            }
+            exit();
         }
     }
 }
@@ -308,17 +366,12 @@ fn sha256(hash_input: &str) {
         hasher.update(input);
         let hash = hasher.finalize();
         let encoded_hash = hex::encode(hash);
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("SHA2: Trying {alt_input}..."),
-            Ordering::Greater => println!("SHA2: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
-Decoded SHA2 Hash is: {alt_input}
+Decoded SHA-2 Hash is: {alt_input}
 =======================================");
-                    
-                break;
-            }
+            exit();
         }
     }
 }
@@ -336,17 +389,12 @@ fn sha1(hash_input: &str) {
         hasher.update(input);
         let hash = hasher.finalize();
         let encoded_hash = hex::encode(hash);
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("SHA1: Trying {alt_input}..."),
-            Ordering::Greater => println!("SHA1: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
 Decoded SHA-1 Hash is: {alt_input}
 =======================================");
-                    
-                break;
-            }
+            exit();
         }
     }
 }
@@ -364,16 +412,12 @@ fn sha3_256(hash_input: &str) {
         hasher.update(input);
         let hash = hasher.finalize();
         let encoded_hash = hex::encode(hash);
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("SHA3_256: Trying {alt_input}..."),
-            Ordering::Greater => println!("SHA3_256: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
-Decoded SHA-3_256 Hash is: {alt_input}
-=======================================");   
-                break;
-            }
+Decoded SHA3-256 Hash is: {alt_input}
+=======================================");
+            exit();
         }
     }
 }
@@ -391,16 +435,12 @@ fn sha3_384(hash_input: &str) {
         hasher.update(input);
         let hash = hasher.finalize();
         let encoded_hash = hex::encode(hash);
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("SHA3_384: Trying {alt_input}..."),
-            Ordering::Greater => println!("SHA3_384: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
-Decoded SHA-3_384 Hash is: {alt_input}
-=======================================");   
-                break;
-            }
+Decoded SHA3-384 Hash is: {alt_input}
+=======================================");
+            exit();
         }
     }
 }
@@ -418,16 +458,12 @@ fn sha3_512(hash_input: &str) {
         hasher.update(input);
         let hash = hasher.finalize();
         let encoded_hash = hex::encode(hash);
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("SHA3_512: Trying {alt_input}..."),
-            Ordering::Greater => println!("SHA3_512: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
-Decoded SHA-3_512 Hash is: {alt_input}
-=======================================");   
-                break;
-            }
+Decoded SHA3-512 Hash is: {alt_input}
+=======================================");
+            exit()        
         }
     }
 }
@@ -445,16 +481,12 @@ fn sm3(hash_input: &str) {
         hasher.update(input);
         let hash = hasher.finalize();
         let encoded_hash = hex::encode(hash);
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("SM3: Trying {alt_input}..."),
-            Ordering::Greater => println!("SM3: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
 Decoded SM3 Hash is: {alt_input}
-=======================================");   
-                break;
-            }
+=======================================");
+            exit();
         }
     }
 }
@@ -488,18 +520,12 @@ fn ntlm(hash_input: &str) {
         
         //println!("{}", hash);
         //let encoded_hash = hex::encode(hash);
-
-        match uncracked.cmp(&encoded_hash) {
-            Ordering::Less => println!("NTLM: Trying {alt_input}..."),
-            Ordering::Greater => println!("NTLM: Trying {alt_input}..."),
-            Ordering::Equal => {
-                println!("
+        if uncracked == encoded_hash {
+            println!("
 =======================================
 Decoded NTLM Hash is: {alt_input}
 =======================================");
-                    
-                break;
-            }
+            exit()
         }
     }
 }
